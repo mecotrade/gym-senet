@@ -1,7 +1,7 @@
 import gym
 import time
 from gym_senet.envs.senet import Senet
-from examples.agents import RandomAgent
+from gym_senet.agents.random_agent import RandomAgent
 
 env = gym.make('gym_senet:senet-v0', render_mode='ansi')
 
@@ -13,23 +13,31 @@ if __name__ == '__main__':
     for _ in range(2):
 
         obs, info = env.reset()
+        legal_actions_fn = info['legal_actions_fn']
 
         print(env.render())
-        print(info)
 
         time.sleep(1)
 
         done = False
         while not done:
 
+            board, player = obs
+
             # active player
-            agent = agents[info['player']]
+            agent = agents[player]
+            print(f'agent {agent.name} move')
+
+            # throw sticks
+            sticks = Senet.throw_sticks()
+            print(f'sticks thrown: {sticks}')
 
             # obtain legal actions
-            legal_actions = info['legal_actions']
+            legal_actions = legal_actions_fn(player, sticks)
+            print(f'legal actions: {legal_actions}')
 
             # choose action
-            action = agent.act(obs, legal_actions)
+            action = agent.act(board, legal_actions)
             print(f'agent {agent.name} takes action {action}')
 
             # apply the action
@@ -37,10 +45,11 @@ if __name__ == '__main__':
 
             # render the env
             print(env.render())
-            print(info)
             print(f'reward = {reward}')
 
             time.sleep(0.2)
+
+        print(info)
 
     # close the env
     env.close()

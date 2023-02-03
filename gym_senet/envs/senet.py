@@ -86,38 +86,44 @@ class Senet:
                 if target_house == Senet.BOARD_SIZE:
                     moves += [house]
 
-        return [(h, num_steps) for h in moves]
+        return [(h, num_steps) for h in moves] if moves else [(Senet.BOARD_SIZE, 0)]
 
     def apply_move(self, player, move):
         """
         :param player:
-        :param move: pair (house of depart, num_steps)
+        :param move: pair (house of depart, num_steps), when house of depart is Senet.BOARD_SIZE = 30,
+                     this is dumb action showing that no legals moves available and the move passes to another player
         :return:
         """
 
         house, num_steps = move
-        target_house = house + num_steps
 
-        self.board[player, house] = 0
+        if house == Senet.BOARD_SIZE:
+            player_wins = False
+            pass_turn = True
+        else:
+            target_house = house + num_steps
 
-        if target_house < Senet.BOARD_SIZE and target_house != Senet.HOUSE_OF_WATER:
-            self.board[player, target_house] = 1
-            # if move is legal and target house is occupied another
-            if target_house < Senet.HOUSE_OF_HAPPINESS and self.board[1 - player, target_house] == 1:
-                self.board[1 - player, target_house] = 0
-                self.board[1 - player, house] = 1
-        elif target_house == Senet.HOUSE_OF_WATER:
-            # rebirth in the House of Rebirth or closest empty house before it
-            rebirth = Senet.HOUSE_OF_REBIRTH - self.board.sum(axis=0)[:Senet.HOUSE_OF_REBIRTH + 1][::-1].tolist().index(0)
-            self.board[player, rebirth] = 1
+            self.board[player, house] = 0
 
-        # no more pieces on the board
-        player_wins = np.sum(self.board[player]) == 0
+            if target_house < Senet.BOARD_SIZE and target_house != Senet.HOUSE_OF_WATER:
+                self.board[player, target_house] = 1
+                # if move is legal and target house is occupied another
+                if target_house < Senet.HOUSE_OF_HAPPINESS and self.board[1 - player, target_house] == 1:
+                    self.board[1 - player, target_house] = 0
+                    self.board[1 - player, house] = 1
+            elif target_house == Senet.HOUSE_OF_WATER:
+                # rebirth in the House of Rebirth or closest empty house before it
+                rebirth = Senet.HOUSE_OF_REBIRTH - self.board.sum(axis=0)[:Senet.HOUSE_OF_REBIRTH + 1][::-1].tolist().index(0)
+                self.board[player, rebirth] = 1
 
-        # pass turn if there are 2 or 3 color sides
-        # keep turn if target house is one of the last three houses
-        pass_turn = (num_steps in [2, 3]) and (target_house not in [Senet.HOUSE_OF_THREE_TRUTHS,
-                                                                    Senet.HOUSE_OF_RE_ATOUM,
-                                                                    Senet.BOARD_SIZE - 1])
+            # no more pieces on the board
+            player_wins = np.sum(self.board[player]) == 0
+
+            # pass turn if there are 2 or 3 color sides
+            # keep turn if target house is one of the last three houses
+            pass_turn = (num_steps in [2, 3]) and (target_house not in [Senet.HOUSE_OF_THREE_TRUTHS,
+                                                                        Senet.HOUSE_OF_RE_ATOUM,
+                                                                        Senet.BOARD_SIZE - 1])
 
         return self.board, player_wins, pass_turn

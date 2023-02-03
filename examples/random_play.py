@@ -1,13 +1,13 @@
 import time
 import random
 
-from gym_senet.envs.renderer import BoardRenderer, AnsiRenderer
+from gym_senet.envs.renderer import HumanRenderer, AnsiRenderer
 from gym_senet.envs.senet import Senet
 
 
 if __name__ == '__main__':
 
-    board_renderer = BoardRenderer()
+    board_renderer = HumanRenderer()
     ansi_renderer = AnsiRenderer()
 
     senet = Senet()
@@ -27,22 +27,17 @@ if __name__ == '__main__':
         moves = senet.legal_moves(player, sticks)
         print(f'legal moves for player {player}: {moves}')
 
-        if moves:
-            random_move = random.choice(moves)
-            print(f'player {player} move: {random_move}')
+        random_move = random.choice(moves)
+        print(f'player {player} move: {random_move}')
 
-            board, player_wins, pass_turn = senet.apply_move(player, random_move)
+        board, player_wins, pass_turn = senet.apply_move(player, random_move)
 
-            print(ansi_renderer.render(board))
-            board_renderer.render(board)
+        print(ansi_renderer.render(board))
+        board_renderer.render(board)
 
-            if player_wins:
-                print(f'player {player} wins!')
-            elif pass_turn:
-                player = 1 - player
-                print(f'turn passes to player {player}')
-        else:
-            # if player has no legal moves, turn is passed
+        if player_wins:
+            print(f'player {player} wins!')
+        elif pass_turn:
             player = 1 - player
             print(f'turn passes to player {player}')
 

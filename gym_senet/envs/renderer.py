@@ -30,7 +30,7 @@ class AnsiRenderer:
         pass
 
 
-class BoardRenderer:
+class RgbRenderer:
 
     BOARD_W = 890
     BOARD_H = 278
@@ -41,14 +41,14 @@ class BoardRenderer:
 
     def __init__(self, width=None, height=None):
 
-        self.width = width or (BoardRenderer.BOARD_W if height is None else int(height * BoardRenderer.BOARD_W / BoardRenderer.BOARD_H))
-        self.height = height or (BoardRenderer.BOARD_H if width is None else int(width * BoardRenderer.BOARD_H / BoardRenderer.BOARD_W))
+        self.width = width or (RgbRenderer.BOARD_W if height is None else int(height * RgbRenderer.BOARD_W / RgbRenderer.BOARD_H))
+        self.height = height or (RgbRenderer.BOARD_H if width is None else int(width * RgbRenderer.BOARD_H / RgbRenderer.BOARD_W))
 
-        self.scale_w = self.width / BoardRenderer.BOARD_W
-        self.scale_h = self.height / BoardRenderer.BOARD_H
+        self.window = pyglet.window.Window(width=self.width, height=self.height, display=None, visible=False)
 
-        self.window = pyglet.window.Window(width=self.width, height=self.height, display=None)
-        
+        self.scale_w = self.width / RgbRenderer.BOARD_W
+        self.scale_h = self.height / RgbRenderer.BOARD_H
+
         pyglet.resource.path = [os.path.join(os.path.dirname(__file__), 'resources')]
         pyglet.resource.reindex()
         
@@ -58,41 +58,59 @@ class BoardRenderer:
         self.board = board
 
         cone = pyglet.resource.image('cone.png')
-        cone.width = BoardRenderer.DANCER_SIZE * self.scale_w
-        cone.height = BoardRenderer.DANCER_SIZE * self.scale_h
+        cone.width = RgbRenderer.DANCER_SIZE * self.scale_w
+        cone.height = RgbRenderer.DANCER_SIZE * self.scale_h
         self.cone = cone
 
         spool = pyglet.resource.image('spool.png')
-        spool.width = BoardRenderer.DANCER_SIZE * self.scale_w
-        spool.height = BoardRenderer.DANCER_SIZE * self.scale_h
+        spool.width = RgbRenderer.DANCER_SIZE * self.scale_w
+        spool.height = RgbRenderer.DANCER_SIZE * self.scale_h
         self.spool = spool
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    def close(self):
-        self.window.close()
-
     def render(self, board):
 
         gl.glClearColor(1, 1, 1, 1)
+
+        batch = pyglet.graphics.Batch()
+        sprites = [pyglet.sprite.Sprite(img=self.board, batch=batch)]
+
+        for x, y in RgbRenderer.COORDINATES[board[Senet.CONS_PLAYER] == 1]:
+            sprites.append(pyglet.sprite.Sprite(img=self.cone, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
+        for x, y in RgbRenderer.COORDINATES[board[Senet.SPOOLS_PLAYER] == 1]:
+            sprites.append(pyglet.sprite.Sprite(img=self.spool, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
+
+        gl.glViewport(0, 0, self.width, self.height)
+        batch.draw()
+
+        image_data = pyglet.image.get_buffer_manager().get_color_buffer().get_image_data()
+        rgb = np.fromstring(image_data.get_data(), dtype=np.uint8, sep='').reshape([self.height, self.width, 4])
+
+        return rgb[::-1, :, 0:3]
+
+    def close(self):
+        self.window.close()
+
+
+class HumanRenderer(RgbRenderer):
+
+    def __init__(self, width=None, height=None):
+
+        super(HumanRenderer, self).__init__(width, height)
+
+        self.window.set_visible(True)
+
+    def render(self, board):
 
         self.window.switch_to()
         self.window.dispatch_events()
         self.window.clear()
 
-        batch = pyglet.graphics.Batch()
-        sprites = [pyglet.sprite.Sprite(img=self.board, batch=batch)]
+        rgb = super(HumanRenderer, self).render(board)
 
-        for x, y in BoardRenderer.COORDINATES[board[Senet.CONS_PLAYER] == 1]:
-            sprites.append(pyglet.sprite.Sprite(img=self.cone, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
-        for x, y in BoardRenderer.COORDINATES[board[Senet.SPOOLS_PLAYER] == 1]:
-            sprites.append(pyglet.sprite.Sprite(img=self.spool, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
-
-        gl.glViewport(0, 0, self.window.width, self.window.height)
-        batch.draw()
-
+        self.window.dispatch_event('on_draw')
         self.window.flip()
 
-
-        
+        return rgb
