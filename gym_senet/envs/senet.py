@@ -21,11 +21,15 @@ class Senet:
         self.reset()
 
     def reset(self):
-        self.board = np.zeros([2, Senet.BOARD_SIZE], dtype=int)
+        self.board = Senet.empty_board()
         self.board[Senet.CONS_PLAYER, 0:2*self.num_pieces:2] = 1
         self.board[Senet.SPOOLS_PLAYER, 1:2*self.num_pieces+1:2] = 1
 
         return self.board
+
+    @staticmethod
+    def empty_board():
+        return np.zeros([2, Senet.BOARD_SIZE], dtype=int)
 
     @staticmethod
     def throw_sticks():

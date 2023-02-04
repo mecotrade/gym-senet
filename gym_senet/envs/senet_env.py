@@ -9,7 +9,7 @@ class SenetEnv(gym.Env):
 
     metadata = {'render_modes': ['human', 'rgb_array', 'ansi'], 'render_fps': 1}
 
-    def __init__(self, num_pieces=5, render_mode='human'):
+    def __init__(self, num_pieces=5, render_mode=None):
 
         if render_mode is None:
             self.renderer = None
