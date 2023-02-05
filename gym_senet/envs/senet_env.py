@@ -1,7 +1,7 @@
 import gym
 from typing import Optional
 from gym.spaces import Tuple, Discrete, MultiBinary, MultiDiscrete
-from gym_senet.envs.senet import Senet
+from gym_senet.envs.senet import Senet, SenetGame
 from gym_senet.envs.renderer import HumanRenderer, RgbRenderer, AnsiRenderer
 
 
@@ -22,20 +22,15 @@ class SenetEnv(gym.Env):
         else:
             raise NotImplementedError(f'render mode {render_mode} is not implemented')
 
-        self.senet = Senet(num_pieces=num_pieces)
+        self.game = SenetGame(num_pieces=num_pieces)
         self.observation_space = Tuple((MultiBinary([2, Senet.BOARD_SIZE]), Discrete(2)))
         # first component: 0, ..., 29 = Senet.BOARD_SIZE - 1 for regular moves
         # and 30 = Senet.BOARD_SIZE for pass the turn to the opponent
         # second component: 1, 2, 3, 4, 5 for regular moves and 0 for pass the turn
         self.action_space = MultiDiscrete([Senet.BOARD_SIZE + 1, 6])
 
-        self.player = None
-
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
-        self.senet.reset()
-
-        self.player = Senet.CONS_PLAYER
-        return self.state(), {'legal_actions_fn': self.senet.legal_moves}
+        return self.game.reset(), {'legal_actions_fn': self.game.legal_moves}
 
     def step(self, action):
         """
@@ -44,27 +39,22 @@ class SenetEnv(gym.Env):
         :return:
         """
 
-        _, player_wins, pass_turn = self.senet.apply_move(self.player, action)
+        board, player, player_wins, pass_turn = self.game.apply_move(action)
 
         done = player_wins
         if player_wins:
-            reward = 1 if self.player == Senet.CONS_PLAYER else -1
-            info = {'winner': self.player}
+            reward = 1 if player == Senet.CONS_PLAYER else -1
+            info = {'winner': player}
         else:
             reward = 0
-            if pass_turn:
-                self.player = 1 - self.player
-            info = {'legal_actions_fn': self.senet.legal_moves}
+            info = {'legal_actions_fn': self.game.legal_moves}
 
         # do not use truncation
-        return self.state(), reward, done, False, info
-
-    def state(self):
-        return self.senet.board, self.player
+        return (board, player), reward, done, False, info
 
     def render(self):
         if self.renderer:
-            return self.renderer.render(self.senet.board)
+            return self.renderer.render(self.game.board)
 
     def close(self):
         if self.renderer:

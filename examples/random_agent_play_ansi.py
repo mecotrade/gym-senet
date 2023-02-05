@@ -1,7 +1,7 @@
 import gym
 import time
 from gym_senet.envs.senet import Senet
-from gym_senet.agents.random_agent import RandomAgent
+from agents.random_agent import RandomAgent
 
 env = gym.make('gym_senet:senet-v0', render_mode='ansi')
 
@@ -33,11 +33,11 @@ if __name__ == '__main__':
             print(f'sticks thrown: {sticks}')
 
             # obtain legal actions
-            legal_actions = legal_actions_fn(player, sticks)
+            legal_actions = legal_actions_fn(sticks)
             print(f'legal actions: {legal_actions}')
 
             # choose action
-            action = agent.act(board, legal_actions)
+            action = agent.act(legal_actions=legal_actions)
             print(f'agent {agent.name} takes action {action}')
 
             # apply the action
