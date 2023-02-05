@@ -13,7 +13,6 @@ if __name__ == '__main__':
     for _ in range(2):
 
         obs, info = env.reset()
-        legal_actions_fn = info['legal_actions_fn']
 
         env.render()
 
@@ -29,7 +28,7 @@ if __name__ == '__main__':
 
             # obtain legal actions
             sticks = Senet.throw_sticks()
-            legal_actions = legal_actions_fn(sticks)
+            legal_actions = Senet.legal_moves(board, player, sticks)
 
             # choose action
             action = agent.act(legal_actions=legal_actions)
