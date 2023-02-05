@@ -126,7 +126,7 @@ class Senet:
                                                                         Senet.HOUSE_OF_RE_ATOUM,
                                                                         Senet.BOARD_SIZE - 1])
 
-        return board, player_wins, pass_turn
+        return board, player if not pass_turn else 1 - player, player_wins, pass_turn
 
 
 class SenetGame:
@@ -148,7 +148,6 @@ class SenetGame:
         return Senet.legal_moves(self.board, self.player, sticks)
 
     def apply_move(self, move):
-        board, player_wins, pass_turn = Senet.apply_move(self.board, self.player, move)
-        if pass_turn:
-            self.player = 1 - self.player
-        return board, self.player, player_wins, pass_turn
+        board, player, player_wins, pass_turn = Senet.apply_move(self.board, self.player, move)
+        self.player = player
+        return board, player, player_wins, pass_turn
