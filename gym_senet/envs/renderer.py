@@ -11,18 +11,21 @@ class AnsiRenderer:
                    Senet.HOUSE_OF_HAPPINESS: 'HA',
                    Senet.HOUSE_OF_WATER: 'WA',
                    Senet.HOUSE_OF_THREE_TRUTHS: '3T',
-                   Senet.HOUSE_OF_RE_ATOUM: 'RA'}
+                   Senet.HOUSE_OF_ISIS_AND_NEPHTHYS: 'IN',
+                   Senet.HOUSE_OF_RA_HORAKHTY: 'RA'}
 
-    def __init__(self, cone='0', spool='X'):
+    def __init__(self, cone='0', spool='1', mandatory='*'):
         self.cone = cone
         self.spool = spool
+        self.mandatory = mandatory
         self.header = '|'.join(['{:-2d}'.format(h) for h in range(Senet.BOARD_SIZE)])
         self.separator = '+'.join([AnsiRenderer.HOUSE_NAMES.get(h, '--') for h in range(Senet.BOARD_SIZE)])
 
     def render(self, board):
-        cones = np.where(board[0] == 1, self.cone, '')
-        spools = np.where(board[1] == 1, self.spool, '')
-        pieces = '|'.join([(cones[h] + spools[h]).rjust(2) for h in range(board.shape[1])])
+        cones = np.where(board[0] != 0, self.cone, '')
+        spools = np.where(board[1] != 0, self.spool, '')
+        mandatory = np.where(np.logical_or(board[0] == -1, board[1] == -1), self.mandatory, '')
+        pieces = '|'.join([(mandatory[h] + cones[h] + spools[h]).rjust(2) for h in range(board.shape[1])])
 
         return '\n'.join([self.header, self.separator, pieces])
 
@@ -52,7 +55,7 @@ class RgbRenderer:
         pyglet.resource.path = [os.path.join(os.path.dirname(__file__), 'resources')]
         pyglet.resource.reindex()
         
-        board = pyglet.resource.image('board5.png')
+        board = pyglet.resource.image('board6.png')
         board.width = self.width
         board.height = self.height
         self.board = board
@@ -77,9 +80,9 @@ class RgbRenderer:
         batch = pyglet.graphics.Batch()
         sprites = [pyglet.sprite.Sprite(img=self.board, batch=batch)]
 
-        for x, y in RgbRenderer.COORDINATES[board[Senet.CONS_PLAYER] == 1]:
+        for x, y in RgbRenderer.COORDINATES[board[Senet.CONS_PLAYER] != 0]:
             sprites.append(pyglet.sprite.Sprite(img=self.cone, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
-        for x, y in RgbRenderer.COORDINATES[board[Senet.SPOOLS_PLAYER] == 1]:
+        for x, y in RgbRenderer.COORDINATES[board[Senet.SPOOLS_PLAYER] != 0]:
             sprites.append(pyglet.sprite.Sprite(img=self.spool, x=x * self.scale_w, y=y * self.scale_h, batch=batch))
 
         gl.glViewport(0, 0, self.width, self.height)
