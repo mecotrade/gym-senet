@@ -31,7 +31,7 @@ if __name__ == '__main__':
             legal_actions = Senet.legal_moves(board, player, sticks)
 
             # choose action
-            action = agent.act(legal_actions=legal_actions)
+            action = agent.act(legal_actions)
 
             # apply the action
             obs, reward, done, _, info = env.step(action)

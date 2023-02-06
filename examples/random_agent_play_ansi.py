@@ -36,7 +36,7 @@ if __name__ == '__main__':
             print(f'legal actions: {legal_actions}')
 
             # choose action
-            action = agent.act(legal_actions=legal_actions)
+            action = agent.act(legal_actions)
             print(f'agent {agent.name} takes action {action}')
 
             # apply the action

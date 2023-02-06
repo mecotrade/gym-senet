@@ -8,5 +8,5 @@ class RandomAgent:
     def __init__(self, name):
         self.name = name
 
-    def act(self, **kwargs):
-        return random.choice(kwargs[RandomAgent.LEGAL_ACTIONS])
+    def act(self, legal_actions, *_):
+        return random.choice(legal_actions)
