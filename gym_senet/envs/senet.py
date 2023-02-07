@@ -89,7 +89,7 @@ class Senet:
             for house in available:
                 if house < Senet.HOUSE_OF_HAPPINESS:
                     target_house = house - num_steps
-                    if (target_house > 0 and board[player, target_house] == 0 and protected[target_house] == 0
+                    if (target_house >= 0 and board[player, target_house] == 0 and protected[target_house] == 0
                             and protected[target_house-1:house].sum() in [0, 1]):
                         moves += [(house, -num_steps)]
 
