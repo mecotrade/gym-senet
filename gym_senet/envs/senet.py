@@ -65,24 +65,39 @@ class Senet:
                     # no protected opponent's pieces (2 in a raw,
                     # but not inner in a cluster) in the target house
                     # no jumps over blockade 2 or more in a row
-                    if board[player, target_house] == 0 and protected[target_house] == 0 and protected[house:target_house].sum() in [0, 1]:
-                        moves += [house]
+                    if (board[player, target_house] == 0 and protected[target_house] == 0
+                            and protected[house:target_house].sum() in [0, 1]):
+                        moves += [(house, num_steps)]
                 else:
                     # Should stop at House of Happiness anyway
-                    moves += [house]
+                    moves += [(house, num_steps)]
             elif house == Senet.HOUSE_OF_HAPPINESS:
                 # pawn which occupies House of Happiness has to make an extra move
-                moves += [house]
+                moves += [(house, num_steps)]
             elif house == Senet.HOUSE_OF_WATER:
                 # pawn makes move if num_steps < 5
                 if num_steps < 5:
-                    moves += [house]
+                    moves += [(house, num_steps)]
             elif house > Senet.HOUSE_OF_WATER:
                 # remove only
                 if target_house == Senet.BOARD_SIZE:
-                    moves += [house]
+                    moves += [(house, num_steps)]
 
-        return [(h, num_steps) for h in moves] if moves else [(Senet.BOARD_SIZE, 0)]
+        # backward moves when no forward moves are available
+        # only for regular houses
+        if not moves:
+            for house in available:
+                if house < Senet.HOUSE_OF_HAPPINESS:
+                    target_house = house - num_steps
+                    if (target_house > 0 and board[player, target_house] == 0 and protected[target_house] == 0
+                            and protected[target_house-1:house].sum() in [0, 1]):
+                        moves += [(house, -num_steps)]
+
+        # if still no moves are available, add dumb move
+        if not moves:
+            moves += [(Senet.BOARD_SIZE, 0)]
+
+        return moves
 
     @staticmethod
     def apply_move(board, player, move):
