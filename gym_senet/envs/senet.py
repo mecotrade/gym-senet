@@ -74,8 +74,9 @@ class Senet:
                 # pawn which occupies House of Happiness has to make an extra move
                 moves += [house]
             elif house == Senet.HOUSE_OF_WATER:
-                # pawn has to make an extra move
-                moves += [house]
+                # pawn makes move if num_steps < 5
+                if num_steps < 5:
+                    moves += [house]
             elif house > Senet.HOUSE_OF_WATER:
                 # remove only
                 if target_house == Senet.BOARD_SIZE:
@@ -95,7 +96,7 @@ class Senet:
 
         house, num_steps = move
 
-        # if a pawn si mandatory, it will not be mandatory next move
+        # if a pawn is mandatory, it will not be mandatory next move
         board[player, np.where(board[player] == -1)[0]] = 1
 
         if house == Senet.BOARD_SIZE:
