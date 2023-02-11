@@ -9,7 +9,7 @@ class SenetEnv(gym.Env):
 
     metadata = {'render_modes': ['human', 'rgb_array', 'ansi'], 'render_fps': 1}
 
-    def __init__(self, num_pieces=5, render_mode=None):
+    def __init__(self, num_pieces=5, render_mode=None, rules='kendall'):
 
         if render_mode is None:
             self.renderer = None
@@ -22,7 +22,7 @@ class SenetEnv(gym.Env):
         else:
             raise NotImplementedError(f'render mode {render_mode} is not implemented')
 
-        self.game = SenetGame(num_pieces=num_pieces)
+        self.game = SenetGame(num_pieces=num_pieces, rules=rules)
         self.observation_space = Tuple((MultiBinary([2, Senet.BOARD_SIZE]), Discrete(2)))
         # first component: 0, ..., 29 = Senet.BOARD_SIZE - 1 for regular moves
         # and 30 = Senet.BOARD_SIZE for pass the turn to the opponent
@@ -30,7 +30,7 @@ class SenetEnv(gym.Env):
         self.action_space = MultiDiscrete([Senet.BOARD_SIZE + 1, 6])
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
-        return self.game.reset(), {'legal_actions_fn': self.game.legal_moves}
+        return self.game.reset(), {'rules': self.game.rules}
 
     def step(self, action):
         """
@@ -47,7 +47,7 @@ class SenetEnv(gym.Env):
             info = {'winner': player}
         else:
             reward = 0
-            info = {'legal_actions_fn': self.game.legal_moves}
+            info = {'rules': self.game.rules}
 
         # do not use truncation
         return (board, player), reward, done, False, info

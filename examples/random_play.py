@@ -10,7 +10,7 @@ if __name__ == '__main__':
     board_renderer = HumanRenderer()
     ansi_renderer = AnsiRenderer()
 
-    game = SenetGame()
+    game = SenetGame(rules='kendall')
     board, player = game.reset()
 
     print(ansi_renderer.render(board))
