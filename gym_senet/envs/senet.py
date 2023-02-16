@@ -179,12 +179,7 @@ class SenetSkyruk(Senet):
 
         moves = []
 
-        #  1 - house is occupied
-        # -1 - house is occupied and only this dancer can move
-        dancers = np.where(board[player] == -1)[0]
-        if not dancers.any():
-            dancers = np.where(board[player] == 1)[0]
-
+        dancers = np.where(board[player] == 1)[0]
         for dancer in dancers:
             landing_house = dancer + num_steps
             # regular piece
@@ -207,7 +202,8 @@ class SenetSkyruk(Senet):
                         moves += [(dancer, num_steps)]
             elif dancer == Senet.HOUSE_OF_HAPPINESS:
                 # pawn which occupies House of Happiness has to make an extra move
-                moves += [(dancer, num_steps)]
+                moves = [(dancer, num_steps)]
+                break
             elif dancer == Senet.HOUSE_OF_WATER:
                 # pawn makes move if num_steps < 5
                 if num_steps < 5:
@@ -249,22 +245,17 @@ class SenetSkyruk(Senet):
 
         house, num_steps = move
 
-        # if a pawn is mandatory, it will not be mandatory next move
-        board[player, np.where(board[player] == -1)[0]] = 1
-
         if house == Senet.BOARD_SIZE:
             player_wins = False
             pass_turn = True
         else:
             landing_house = house + num_steps
-            mandatory_next = False
 
             # correct target house for some special cases
             if house < Senet.HOUSE_OF_HAPPINESS:
                 # any pawn should stop at House of Happiness whatever num_steps is
                 if landing_house >= Senet.HOUSE_OF_HAPPINESS:
                     landing_house = Senet.HOUSE_OF_HAPPINESS
-                    mandatory_next = True
             elif house == Senet.HOUSE_OF_HAPPINESS:
                 # if num_steps = 2, 3, 4 go to the landing house, if it is occupied, go to House of Water
                 if landing_house in [Senet.HOUSE_OF_THREE_TRUTHS, Senet.HOUSE_OF_RE_ATUM, Senet.HOUSE_OF_RE_HORAKHTY]:
@@ -286,7 +277,7 @@ class SenetSkyruk(Senet):
             # move player's pawn
             board[player, house] = 0
             if landing_house < Senet.BOARD_SIZE:
-                board[player, landing_house] = 1 if not mandatory_next else -1
+                board[player, landing_house] = 1
                 # if target house is occupied by opponent's pawn, move it to house of departure
                 if board[player - 1, landing_house] == 1:
                     board[player - 1, landing_house] = 0
@@ -297,7 +288,7 @@ class SenetSkyruk(Senet):
 
             # pass turn if there are 2 or 3 color sides
             # keep turn if target house is one of the last three houses
-            pass_turn = (num_steps in [2, 3]) and not mandatory_next
+            pass_turn = (num_steps in [2, 3]) and landing_house == Senet.HOUSE_OF_HAPPINESS
 
         return board, player if not pass_turn or player_wins else 1 - player, player_wins, pass_turn
 
