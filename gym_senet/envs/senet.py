@@ -8,8 +8,8 @@ class Senet:
     HOUSE_OF_HAPPINESS = 25
     HOUSE_OF_WATER = 26
     HOUSE_OF_THREE_TRUTHS = 27
-    HOUSE_OF_RA_ATUM = 28
-    HOUSE_OF_RA_HORAKHTY = 29
+    HOUSE_OF_RE_ATUM = 28
+    HOUSE_OF_RE_HORAKHTY = 29
 
     CONS_PLAYER = 0
     SPOOLS_PLAYER = 1
@@ -81,35 +81,35 @@ class SenetKendall(Senet):
         moves = []
         dancers = np.where(board[player] == 1)[0]
         for dancer in dancers:
-            target_house = dancer + num_steps
+            landing_house = dancer + num_steps
             # regular piece
             if dancer < Senet.HOUSE_OF_HAPPINESS:
-                if target_house < Senet.HOUSE_OF_HAPPINESS:
+                if landing_house < Senet.HOUSE_OF_HAPPINESS:
                     # no player's dancer in the target house
                     # no protected another dancer's pieces in the target house:
                     # 2 in a row and House of Rebirth
                     # no jumps over blockade: 3 or more in a row
-                    if (board[player, target_house] == 0
-                            and clusters[target_house] in [0, 1]
-                            and clusters[dancer:target_house].max(initial=0) != SenetKendall.INNER_DANCER):
+                    if (board[player, landing_house] == 0
+                            and clusters[landing_house] in [0, 1]
+                            and clusters[dancer:landing_house].max(initial=0) != SenetKendall.INNER_DANCER):
                         moves += [(dancer, num_steps)]
-                elif target_house == Senet.HOUSE_OF_HAPPINESS:
+                elif landing_house == Senet.HOUSE_OF_HAPPINESS:
                     # House of Happiness is empty
-                    if (board[:, target_house].sum() == 0
-                            and clusters[target_house] in [0, 1]
-                            and clusters[dancer:target_house].max(initial=0) != SenetKendall.INNER_DANCER):
+                    if (board[:, landing_house].sum() == 0
+                            and clusters[landing_house] in [0, 1]
+                            and clusters[dancer:landing_house].max(initial=0) != SenetKendall.INNER_DANCER):
                         moves += [(dancer, num_steps)]
             # happy piece
             elif dancer == Senet.HOUSE_OF_HAPPINESS:
                 # remove or target house is empty
-                if target_house == Senet.BOARD_SIZE or board[:, target_house].sum() == 0:
+                if landing_house == Senet.BOARD_SIZE or board[:, landing_house].sum() == 0:
                     moves += [(dancer, num_steps)]
             elif dancer == Senet.HOUSE_OF_WATER:
                 # can't be
                 raise Exception(f'Something went wrong, player {player} piece is in the House of Water')
             elif dancer > Senet.HOUSE_OF_WATER:
                 # remove only
-                if target_house == Senet.BOARD_SIZE:
+                if landing_house == Senet.BOARD_SIZE:
                     moves += [(dancer, num_steps)]
 
         # backward moves when no forward moves are available
@@ -117,11 +117,11 @@ class SenetKendall(Senet):
         if not moves:
             for dancer in dancers:
                 if dancer < Senet.HOUSE_OF_HAPPINESS:
-                    target_house = dancer - num_steps
-                    if (target_house >= 0
-                            and board[player, target_house] == 0
-                            and clusters[target_house] in [0, 1]
-                            and clusters[target_house:dancer].max(initial=0) != SenetKendall.INNER_DANCER):
+                    landing_house = dancer - num_steps
+                    if (landing_house >= 0
+                            and board[player, landing_house] == 0
+                            and clusters[landing_house] in [0, 1]
+                            and clusters[landing_house:dancer].max(initial=0) != SenetKendall.INNER_DANCER):
                         moves += [(dancer, -num_steps)]
 
         # if still no moves are available, add dumb move
@@ -146,17 +146,17 @@ class SenetKendall(Senet):
             player_wins = False
             pass_turn = True
         else:
-            target_house = house + num_steps
+            landing_house = house + num_steps
 
             board[player, house] = 0
 
-            if target_house < Senet.BOARD_SIZE and target_house != Senet.HOUSE_OF_WATER:
-                board[player, target_house] = 1
+            if landing_house < Senet.BOARD_SIZE and landing_house != Senet.HOUSE_OF_WATER:
+                board[player, landing_house] = 1
                 # if move is legal and target house is occupied another
-                if target_house < Senet.HOUSE_OF_HAPPINESS and board[1 - player, target_house] == 1:
-                    board[1 - player, target_house] = 0
+                if landing_house < Senet.HOUSE_OF_HAPPINESS and board[1 - player, landing_house] == 1:
+                    board[1 - player, landing_house] = 0
                     board[1 - player, house] = 1
-            elif target_house == Senet.HOUSE_OF_WATER:
+            elif landing_house == Senet.HOUSE_OF_WATER:
                 # rebirth in the House of Rebirth or closest empty house before it
                 rebirth = Senet.HOUSE_OF_REBIRTH - board.sum(axis=0)[:Senet.HOUSE_OF_REBIRTH + 1][::-1].tolist().index(0)
                 board[player, rebirth] = 1
@@ -186,19 +186,19 @@ class SenetSkyruk(Senet):
             dancers = np.where(board[player] == 1)[0]
 
         for dancer in dancers:
-            target_house = dancer + num_steps
+            landing_house = dancer + num_steps
             # regular piece
             if dancer < Senet.HOUSE_OF_HAPPINESS:
-                if target_house < Senet.HOUSE_OF_HAPPINESS:
+                if landing_house < Senet.HOUSE_OF_HAPPINESS:
                     # no player's dancer in the target house
                     # no protected another dancer's pieces in the target house:
                     # 2 in a row and House of Rebirth
                     # no jumps over blockade: 2 or more in a row
                     # when an opponent's blockade is broken,
                     # no jump oven another blockade is possible:
-                    if (board[player, target_house] == 0
-                        and (clusters[target_house] in [0, 1] and clusters[dancer:target_house].max(initial=0) < 2
-                            or clusters[target_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:target_house] == 2).max(initial=0) == 0)):
+                    if (board[player, landing_house] == 0
+                        and (clusters[landing_house] in [0, 1] and clusters[dancer:landing_house].max(initial=0) < 2
+                            or clusters[landing_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:landing_house] == 2).max(initial=0) == 0)):
                         moves += [(dancer, num_steps)]
                 else:
                     # Should stop at House of Happiness anyway if it is empty
@@ -212,20 +212,23 @@ class SenetSkyruk(Senet):
                 # pawn makes move if num_steps < 5
                 if num_steps < 5:
                     moves += [(dancer, num_steps)]
-            elif dancer > Senet.HOUSE_OF_WATER:
+            elif dancer in [Senet.HOUSE_OF_THREE_TRUTHS, Senet.HOUSE_OF_RE_ATUM]:
                 # remove only
-                if target_house == Senet.BOARD_SIZE:
+                if landing_house == Senet.BOARD_SIZE:
                     moves += [(dancer, num_steps)]
+            else:
+                # House of Re-Horakthy, can be bourne off with any number of steps
+                moves += [(dancer, num_steps)]
 
         # backward moves when no forward moves are available
         # only for regular houses
         if not moves:
             for dancer in dancers:
                 if dancer < Senet.HOUSE_OF_HAPPINESS:
-                    target_house = dancer - num_steps
-                    if (target_house >= 0 and board[player, target_house] == 0
-                            and (clusters[target_house] in [0, 1] and clusters[dancer:target_house].max(initial=0) < 2
-                                 or clusters[target_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:target_house] == 2).max(initial=0) == 0)):
+                    landing_house = dancer - num_steps
+                    if (landing_house >= 0 and board[player, landing_house] == 0
+                            and (clusters[landing_house] in [0, 1] and clusters[dancer:landing_house].max(initial=0) < 2
+                                 or clusters[landing_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:landing_house] == 2).max(initial=0) == 0)):
                         moves += [(dancer, -num_steps)]
 
         # if still no moves are available, add dumb move
@@ -253,46 +256,40 @@ class SenetSkyruk(Senet):
             player_wins = False
             pass_turn = True
         else:
-            target_house = house + num_steps
+            landing_house = house + num_steps
             mandatory_next = False
 
             # correct target house for some special cases
             if house < Senet.HOUSE_OF_HAPPINESS:
                 # any pawn should stop at House of Happiness whatever num_steps is
-                if target_house >= Senet.HOUSE_OF_HAPPINESS:
-                    target_house = Senet.HOUSE_OF_HAPPINESS
+                if landing_house >= Senet.HOUSE_OF_HAPPINESS:
+                    landing_house = Senet.HOUSE_OF_HAPPINESS
                     mandatory_next = True
             elif house == Senet.HOUSE_OF_HAPPINESS:
-                # if num_steps = 2, 3, 4 go to the target house, if it is occupied, go to House of Water
-                if target_house in [Senet.HOUSE_OF_THREE_TRUTHS, Senet.HOUSE_OF_RA_ATUM, Senet.HOUSE_OF_RA_HORAKHTY]:
-                    if board[:, target_house].tolist() != [0, 0]:
-                        target_house = Senet.HOUSE_OF_WATER
-                    else:
-                        # if target house is one of the last three, this pawn has to take move once again
-                        mandatory_next = True
+                # if num_steps = 2, 3, 4 go to the landing house, if it is occupied, go to House of Water
+                if landing_house in [Senet.HOUSE_OF_THREE_TRUTHS, Senet.HOUSE_OF_RE_ATUM, Senet.HOUSE_OF_RE_HORAKHTY]:
+                    if board[:, landing_house].tolist() != [0, 0]:
+                        landing_house = Senet.HOUSE_OF_WATER
                 # if num_steps = 1 or target house is occupied and House of Water is occupied as well,
                 # go to Rebirth House
-                if target_house == Senet.HOUSE_OF_WATER:
-                    if board[:, target_house].tolist() != [0, 0]:
-                        target_house = SenetSkyruk.rebirth(board)
-                    else:
-                        # if target is House of Water, this pawn has to take move once again
-                        mandatory_next = True
+                if landing_house == Senet.HOUSE_OF_WATER:
+                    if board[:, landing_house].tolist() != [0, 0]:
+                        landing_house = SenetSkyruk.rebirth(board)
             elif house == Senet.HOUSE_OF_WATER:
                 # if num_steps is 5, standby
                 if num_steps == 5:
-                    target_house = house
+                    landing_house = house
                 # if num_steps is not 4, go to rebirth
                 elif num_steps < 4:
-                    target_house = SenetSkyruk.rebirth(board)
+                    landing_house = SenetSkyruk.rebirth(board)
 
             # move player's pawn
             board[player, house] = 0
-            if target_house < Senet.BOARD_SIZE:
-                board[player, target_house] = 1 if not mandatory_next else -1
+            if landing_house < Senet.BOARD_SIZE:
+                board[player, landing_house] = 1 if not mandatory_next else -1
                 # if target house is occupied by opponent's pawn, move it to house of departure
-                if board[player - 1, target_house] == 1:
-                    board[player - 1, target_house] = 0
+                if board[player - 1, landing_house] == 1:
+                    board[player - 1, landing_house] = 0
                     board[player - 1, house] = 1
 
             # no more pieces on the board
@@ -312,7 +309,7 @@ class SenetSkyruk(Senet):
 class SenetGame:
 
     @staticmethod
-    def gameplay(rules='kendall'):
+    def gameplay(rules):
         if rules == 'kendall':
             legal_actions = SenetKendall.legal_moves
             apply_action = SenetKendall.apply_move
@@ -329,7 +326,7 @@ class SenetGame:
         self.num_pieces = num_pieces
         self.rules = rules
 
-        self.legal_actions, self.apply_action = SenetGame.gameplay(rules)
+        self.legal_actions, self.apply_action = SenetGame.gameplay(self.rules)
 
         self.board = np.empty([2, Senet.BOARD_SIZE], dtype=int)
         self.player = None
@@ -338,7 +335,7 @@ class SenetGame:
 
     def reset(self):
         self.board = Senet.init_board(self.num_pieces)
-        self.player = Senet.CONS_PLAYER
+        self.player = Senet.SPOOLS_PLAYER
         return self.board, self.player
 
     def legal_moves(self, sticks):

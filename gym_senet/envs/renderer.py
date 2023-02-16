@@ -11,8 +11,8 @@ class AnsiRenderer:
                    Senet.HOUSE_OF_HAPPINESS: 'HA',
                    Senet.HOUSE_OF_WATER: 'WA',
                    Senet.HOUSE_OF_THREE_TRUTHS: '3T',
-                   Senet.HOUSE_OF_RA_ATUM: 'RA',
-                   Senet.HOUSE_OF_RA_HORAKHTY: 'HO'}
+                   Senet.HOUSE_OF_RE_ATUM: 'RA',
+                   Senet.HOUSE_OF_RE_HORAKHTY: 'HO'}
 
     def __init__(self, cone='0', spool='1', mandatory='*'):
         self.cone = cone

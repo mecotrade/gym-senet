@@ -47,7 +47,7 @@ class SenetEnv(gym.Env):
             info = {'winner': player}
         else:
             reward = 0
-            info = {'rules': self.game.rules}
+            info = {'pass': pass_turn}
 
         # do not use truncation
         return (board, player), reward, done, False, info
