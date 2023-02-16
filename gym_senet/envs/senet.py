@@ -305,7 +305,7 @@ class SenetSkyruk(Senet):
 
             # pass turn if there are 2 or 3 color sides
             # keep turn if target house is one of the last three houses
-            pass_turn = (num_steps in [2, 3]) and landing_house == Senet.HOUSE_OF_HAPPINESS
+            pass_turn = (num_steps in [2, 3]) and landing_house != Senet.HOUSE_OF_HAPPINESS
 
         return board, player if not pass_turn or player_wins else 1 - player, player_wins, pass_turn
 
