@@ -1,7 +1,13 @@
 # Senet OpenAI Gym
 
 - [Rules](#rules)
+  - [Kendall](#kendall)
+  - [Skyruk](#skyruk)
 - [Installation](#installation)
+- [Environment](#environmnet)
+  - [Observation](#observation)
+  - [Actions](#actions)
+  - [Rewards](#rewards)
 
 ---
 ## <a name="rules"></a>Rules
@@ -77,7 +83,7 @@ which probably have deeper connection with original Egyptian game.
 Below we explain what *blockade* and *protected* dancer mean in each
 version of Senet rules, and how to move when landed to a special house.
 
-### Kendall
+### <a name="kendall"></a>Kendall
 
 * *Blockade*: three or more opponent's dancers in a row, all dancers
 should stand next to each other
@@ -104,7 +110,7 @@ within protected group can be beaten
   * The dancer in the House of Re-Horakhty can be bourne off the board
   if the number of steps is 1, this is the only legal move for this dancer
 
-### Skyruk
+### <a name="skyruk"></a>Skyruk
 
 * *Blockade*: two or more opponent's dancers in a row, all dancers
 should stand next to each other
@@ -149,3 +155,41 @@ git clone https://github.com/mecotrade/gym-senet.git
 cd gym-senet/
 pip install -e .
 ```
+
+---
+## <a name="environment"></a>Environment
+
+### <a name="observations"></a>Observation
+
+Observations come as a pair of the board itself and the player having next move. 
+The board is encoded and a numpy array of shape `[2, 30]`, where 0-th component is
+for the cons, and 1-th component is for spools. The values are 1 if the house is 
+occupied with a dancer of a given player, and 0 otherwise. The empty house has 
+therefore `[0, house] == 0` and `[1, house] == 1`.
+
+### <a name="actions"></a>Actions
+
+There are 3 equivalent representation for actions:
+1. Action is represented as a pair `(house, num_steps)` where `house` is the house
+index, from 0 to 29, whereas num_steps is number of steps, positive for move
+forward and negative for move backward. When no move is possible, neither forward
+not backward, the dumb action is represented by pair `(30, 0)`.
+2. Another way to represent an action is to use dancer index instead of house index,
+more specifically, all dancers of given player is enumerated from starting house to
+the house of Re-Horakhty. Important point, the index is not referenced to a specific
+dancer, instead, to its relative position. The action is represented, therefore, by
+a pair `(dancer_index, num_steps)`. When no move is legal, this dumb action is 
+represented by `(-1, 0)`.
+3. Finally, any pair of type `(dancer_index, num_steps)` can be converted to a 
+single number from the interval `[0..10 * num_pieces]`, that is, `[0..50]` for 5 pieces
+game and `[0..70]` for 7 pieces game, according to the following formula:
+    * `dancer_index * 10 + num_steps` if `num_steps = 1, 2, 3, 4, 5`
+    * `dancer_index * 10 + 11 - num_steps` if `num_steps = -5, -4, -3, -2, -1`
+    * and 0 stands for the dumb action
+
+The third way is suitable for the MCTS implementation.
+
+### <a name="rewards"></a>Rewards
+
+Rewards is `+1` when "cons" player wins, `-1` when "spools" player wins, and `0` 
+after any move in the middle of the game.

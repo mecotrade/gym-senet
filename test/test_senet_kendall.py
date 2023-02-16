@@ -16,11 +16,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(3, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(3, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(3, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(3, 4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(3, 5)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, 4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, 5)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_blockade(self):
 
@@ -33,11 +33,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(3, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(3, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(3, -3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_protected_with_house_of_happiness(self):
 
@@ -50,11 +50,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        #self.assertEqual([(22, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(22, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(22, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(22, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(22, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_legal_moves_house_of_happiness(self):
 
@@ -67,11 +67,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(21, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(21, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(21, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(21, 4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(21, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, 4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_legal_moves_house_of_happiness_blockade(self):
 
@@ -84,11 +84,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(21, -1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(21, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(21, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(21, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(21, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, -1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_legal_moves_between_blockades(self):
 
@@ -101,11 +101,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(10, -1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, -1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_legal_moves_house_of_rebirth_protected(self):
 
@@ -118,11 +118,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(12, 1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(12, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(12, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(12, 4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(12, 5)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, 4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, 5)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_from_house_of_happiness(self):
 
@@ -135,11 +135,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, 3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, 4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, 5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_legal_moves_from_house_of_three_truths(self):
 
@@ -152,11 +152,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(SenetKendall.HOUSE_OF_THREE_TRUTHS, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, 3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_from_house_of_ra_atum(self):
 
@@ -169,11 +169,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(SenetKendall.HOUSE_OF_RA_ATUM, 2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, 2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_backward(self):
 
@@ -186,11 +186,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(17, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(17, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(17, -4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, -1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, -4)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_backward_house_of_happiness(self):
 
@@ -203,11 +203,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(24, 1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
-        self.assertEqual([(24, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
-        self.assertEqual([(24, -3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, -2)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 5))
 
     def test_legal_moves_backward_takes(self):
 
@@ -220,11 +220,11 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
-        self.assertEqual([(SenetKendall.BOARD_SIZE, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
-        self.assertEqual([(10, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
-        self.assertEqual([(10, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
-        self.assertEqual([(10, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(SenetKendall.NO_DANCER, 0)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 2))
+        self.assertEqual([SenetKendall.encode_move(0, -3)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 3))
+        self.assertEqual([SenetKendall.encode_move(0, -4)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 4))
+        self.assertEqual([SenetKendall.encode_move(0, -5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
     def test_apply_move_to_house_of_water(self):
 
@@ -237,10 +237,10 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, (SenetKendall.HOUSE_OF_HAPPINESS, 1))
+        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
 
         # then
         # check side effects on the board
@@ -264,10 +264,10 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
+        self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, (SenetKendall.HOUSE_OF_HAPPINESS, 1))
+        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
 
         # then
         # check side effects on the board
@@ -291,10 +291,10 @@ class TestSenetKendall(unittest.TestCase):
         ])
 
         # then
-        self.assertEqual([(SenetKendall.HOUSE_OF_HAPPINESS, 5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
+        self.assertEqual([SenetKendall.encode_move(0, 5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, (SenetKendall.HOUSE_OF_HAPPINESS, 5))
+        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 5))
 
         # then
         # check side effects on the board
@@ -307,6 +307,3 @@ class TestSenetKendall(unittest.TestCase):
         self.assertTrue(player_wins)
         self.assertFalse(pass_turn)
 
-
-if __name__ == '__main__':
-    unittest.main()

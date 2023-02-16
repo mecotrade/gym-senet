@@ -24,10 +24,10 @@ if __name__ == '__main__':
         print(f'player {player} throws sticks: {sticks}')
 
         moves = game.legal_moves(sticks)
-        print(f'legal moves for player {player}: {moves}')
+        print(f'legal moves for player {player}: {[Senet.decode_move_for_player(move, board, player) for move in moves]}')
 
         random_move = random.choice(moves)
-        print(f'player {player} move: {random_move}')
+        print(f'player {player} move: {Senet.decode_move_for_player(random_move, board, player)}')
 
         board, player, player_wins, pass_turn = game.apply_move(random_move)
 

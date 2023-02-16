@@ -16,6 +16,8 @@ class Senet:
 
     INNER_DANCER = 42
     SAFE_DANCER = 43
+    NO_DANCER = -1
+    PASS_TURN = 0
 
     @staticmethod
     def empty_board():
@@ -70,6 +72,25 @@ class Senet:
 
         return clusters
 
+    @staticmethod
+    def encode_move(dancer_id, num_steps):
+        return Senet.PASS_TURN if dancer_id == Senet.NO_DANCER else dancer_id * 10 + (num_steps if num_steps > 0 else (11 + num_steps))
+
+    @staticmethod
+    def decode_move(move):
+        if move == Senet.PASS_TURN:
+            return Senet.NO_DANCER, 0
+        else:
+            move -= 1
+            dancer_id, num_steps = move // 10, move % 10
+            num_steps = num_steps + 1 if num_steps < 5 else (num_steps - 10)
+            return dancer_id, num_steps
+
+    @staticmethod
+    def decode_move_for_player(move, board, player):
+        dancer_id, num_steps = Senet.decode_move(move)
+        return np.where(board[player] == 1)[0][dancer_id] if dancer_id != Senet.NO_DANCER else Senet.NO_DANCER, num_steps
+
 
 class SenetKendall(Senet):
 
@@ -80,7 +101,7 @@ class SenetKendall(Senet):
 
         moves = []
         dancers = np.where(board[player] == 1)[0]
-        for dancer in dancers:
+        for dancer_id, dancer in enumerate(dancers):
             landing_house = dancer + num_steps
             # regular piece
             if dancer < Senet.HOUSE_OF_HAPPINESS:
@@ -92,60 +113,58 @@ class SenetKendall(Senet):
                     if (board[player, landing_house] == 0
                             and clusters[landing_house] in [0, 1]
                             and clusters[dancer:landing_house].max(initial=0) != SenetKendall.INNER_DANCER):
-                        moves += [(dancer, num_steps)]
+                        moves += [Senet.encode_move(dancer_id, num_steps)]
                 elif landing_house == Senet.HOUSE_OF_HAPPINESS:
                     # House of Happiness is empty
                     if (board[:, landing_house].sum() == 0
                             and clusters[landing_house] in [0, 1]
                             and clusters[dancer:landing_house].max(initial=0) != SenetKendall.INNER_DANCER):
-                        moves += [(dancer, num_steps)]
+                        moves += [Senet.encode_move(dancer_id, num_steps)]
             # happy piece
             elif dancer == Senet.HOUSE_OF_HAPPINESS:
                 # remove or target house is empty
                 if landing_house == Senet.BOARD_SIZE or board[:, landing_house].sum() == 0:
-                    moves += [(dancer, num_steps)]
+                    moves += [Senet.encode_move(dancer_id, num_steps)]
             elif dancer == Senet.HOUSE_OF_WATER:
                 # can't be
                 raise Exception(f'Something went wrong, player {player} piece is in the House of Water')
             elif dancer > Senet.HOUSE_OF_WATER:
                 # remove only
                 if landing_house == Senet.BOARD_SIZE:
-                    moves += [(dancer, num_steps)]
+                    moves += [Senet.encode_move(dancer_id, num_steps)]
 
         # backward moves when no forward moves are available
         # only for regular houses
         if not moves:
-            for dancer in dancers:
+            for dancer_id, dancer in enumerate(dancers):
                 if dancer < Senet.HOUSE_OF_HAPPINESS:
                     landing_house = dancer - num_steps
                     if (landing_house >= 0
                             and board[player, landing_house] == 0
                             and clusters[landing_house] in [0, 1]
                             and clusters[landing_house:dancer].max(initial=0) != SenetKendall.INNER_DANCER):
-                        moves += [(dancer, -num_steps)]
+                        moves += [Senet.encode_move(dancer_id, -num_steps)]
 
-        # if still no moves are available, add dumb move
-        if not moves:
-            moves += [(Senet.BOARD_SIZE, 0)]
-
-        return moves
+        # if still no moves are available, add pass turn
+        return moves if moves else [Senet.PASS_TURN]
 
     @staticmethod
     def apply_move(board, player, move):
         """
         :param board:
         :param player:
-        :param move: pair (house of depart, num_steps), when house of depart is Senet.BOARD_SIZE = 30,
-                     this is dumb action showing that no legals moves available and the move passes to another player
+        :param move: 0 for pass turn, otherwise move encoded to an integer
         :return:
         """
 
-        house, num_steps = move
-
-        if house == Senet.BOARD_SIZE:
+        if move == Senet.PASS_TURN:
             player_wins = False
             pass_turn = True
         else:
+            dancers = np.where(board[player] == 1)[0]
+            dancer_id, num_steps = SenetKendall.decode_move(move)
+
+            house = dancers[dancer_id]
             landing_house = house + num_steps
 
             board[player, house] = 0
@@ -180,7 +199,7 @@ class SenetSkyruk(Senet):
         moves = []
 
         dancers = np.where(board[player] == 1)[0]
-        for dancer in dancers:
+        for dancer_id, dancer in enumerate(dancers):
             landing_house = dancer + num_steps
             # regular piece
             if dancer < Senet.HOUSE_OF_HAPPINESS:
@@ -193,62 +212,60 @@ class SenetSkyruk(Senet):
                     # no jump oven another blockade is possible:
                     if (board[player, landing_house] == 0
                         and (clusters[landing_house] in [0, 1] and clusters[dancer:landing_house].max(initial=0) < 2
-                            or clusters[landing_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:landing_house] == 2).max(initial=0) == 0)):
-                        moves += [(dancer, num_steps)]
+                             or clusters[landing_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:landing_house] == 2).max(initial=0) == 0)):
+                        moves += [SenetSkyruk.encode_move(dancer_id, num_steps)]
                 else:
                     # Should stop at House of Happiness anyway if it is empty
                     if (board[:, Senet.HOUSE_OF_HAPPINESS].sum() == 0
                             and clusters[dancer:Senet.HOUSE_OF_HAPPINESS].max(initial=0) != SenetKendall.INNER_DANCER):
-                        moves += [(dancer, num_steps)]
+                        moves += [SenetSkyruk.encode_move(dancer_id, num_steps)]
             elif dancer == Senet.HOUSE_OF_HAPPINESS:
                 # pawn which occupies House of Happiness has to make an extra move
-                moves = [(dancer, num_steps)]
+                moves = [SenetSkyruk.encode_move(dancer_id, num_steps)]
                 break
             elif dancer == Senet.HOUSE_OF_WATER:
                 # pawn makes move if num_steps < 5
                 if num_steps < 5:
-                    moves += [(dancer, num_steps)]
+                    moves += [SenetSkyruk.encode_move(dancer_id, num_steps)]
             elif dancer in [Senet.HOUSE_OF_THREE_TRUTHS, Senet.HOUSE_OF_RE_ATUM]:
                 # remove only
                 if landing_house == Senet.BOARD_SIZE:
-                    moves += [(dancer, num_steps)]
+                    moves += [SenetSkyruk.encode_move(dancer_id, num_steps)]
             else:
                 # House of Re-Horakthy, can be bourne off with any number of steps
-                moves += [(dancer, num_steps)]
+                moves += [SenetSkyruk.encode_move(dancer_id, num_steps)]
 
         # backward moves when no forward moves are available
         # only for regular houses
         if not moves:
-            for dancer in dancers:
+            for dancer_id, dancer in enumerate(dancers):
                 if dancer < Senet.HOUSE_OF_HAPPINESS:
                     landing_house = dancer - num_steps
                     if (landing_house >= 0 and board[player, landing_house] == 0
                             and (clusters[landing_house] in [0, 1] and clusters[dancer:landing_house].max(initial=0) < 2
                                  or clusters[landing_house] == SenetSkyruk.INNER_DANCER and (clusters[dancer:landing_house] == 2).max(initial=0) == 0)):
-                        moves += [(dancer, -num_steps)]
+                        moves += [SenetSkyruk.encode_move(dancer_id, -num_steps)]
 
-        # if still no moves are available, add dumb move
-        if not moves:
-            moves += [(Senet.BOARD_SIZE, 0)]
-
-        return moves
+        # if still no moves are available, add pass turn move
+        return moves if moves else [Senet.PASS_TURN]
 
     @staticmethod
     def apply_move(board, player, move):
         """
         :param board:
         :param player:
-        :param move: pair (house of departure, num_steps), when house of departure is Senet.BOARD_SIZE = 30,
-                     this is dumb move showing that no legals moves are available and the turn passes to another player
+        :param move: 0 for pass turn, otherwise move encoded to an integer
         :return:
         """
 
-        house, num_steps = move
-
-        if house == Senet.BOARD_SIZE:
+        if move == Senet.PASS_TURN:
             player_wins = False
             pass_turn = True
         else:
+            dancers = np.where(board[player] == 1)[0]
+            dancer_id, num_steps = SenetSkyruk.decode_move(move)
+
+            house = dancers[dancer_id]
             landing_house = house + num_steps
 
             # correct target house for some special cases

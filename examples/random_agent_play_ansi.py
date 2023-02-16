@@ -32,11 +32,11 @@ if __name__ == '__main__':
 
             # obtain legal actions
             legal_actions = legal_actions_fn(board, player, Senet.steps(sticks))
-            print(f'legal actions: {legal_actions}')
+            print(f'legal actions: {[Senet.decode_move_for_player(action, board, player) for action in legal_actions]}')
 
             # choose action
             action = agent.act(legal_actions)
-            print(f'agent {agent.name} takes action {action}')
+            print(f'agent {agent.name} takes action {Senet.decode_move_for_player(action, board, player)}')
 
             # apply the action
             (board, player), reward, done, _, info = env.step(action)
