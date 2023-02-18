@@ -24,10 +24,7 @@ class SenetEnv(gym.Env):
 
         self.game = SenetGame(num_pieces=num_pieces, rules=rules)
         self.observation_space = Tuple((MultiBinary([2, Senet.BOARD_SIZE]), Discrete(2)))
-        # first component: 0, ..., 29 = Senet.BOARD_SIZE - 1 for regular moves
-        # and 30 = Senet.BOARD_SIZE for pass the turn to the opponent
-        # second component: 1, 2, 3, 4, 5 for regular moves and 0 for pass the turn
-        self.action_space = MultiDiscrete([Senet.BOARD_SIZE + 1, 6])
+        self.action_space = Discrete(10 * num_pieces + 1)
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
         return self.game.reset(), {'rules': self.game.rules}
@@ -39,15 +36,8 @@ class SenetEnv(gym.Env):
         :return:
         """
 
-        board, player, player_wins, pass_turn = self.game.apply_move(action)
-
-        done = player_wins
-        if player_wins:
-            reward = 1 if player == Senet.CONS_PLAYER else -1
-            info = {'winner': player}
-        else:
-            reward = 0
-            info = {'pass': pass_turn}
+        board, player, reward, done, pass_turn = self.game.apply_move(action)
+        info = {'winner': player} if done else {'pass': pass_turn}
 
         # do not use truncation
         return (board, player), reward, done, False, info

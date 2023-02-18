@@ -158,7 +158,8 @@ class SenetKendall(Senet):
         """
 
         if move == Senet.PASS_TURN:
-            player_wins = False
+            reward = 0
+            done = False
             pass_turn = True
         else:
             dancers = np.where(board[player] == 1)[0]
@@ -181,12 +182,15 @@ class SenetKendall(Senet):
                 board[player, rebirth] = 1
 
             # no more pieces on the board
-            player_wins = np.sum(board[player]) == 0
+            done = np.sum(board[player]) == 0
 
             # pass turn if there are 2 or 3 color sides
             pass_turn = num_steps in [2, 3]
+            player = player if not pass_turn or done else 1 - player
 
-        return board, player if not pass_turn or player_wins else 1 - player, player_wins, pass_turn
+            reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
+
+        return board, player, reward, done, pass_turn
 
 
 class SenetSkyruk(Senet):
@@ -259,7 +263,8 @@ class SenetSkyruk(Senet):
         """
 
         if move == Senet.PASS_TURN:
-            player_wins = False
+            reward = 0
+            done = False
             pass_turn = True
         else:
             dancers = np.where(board[player] == 1)[0]
@@ -301,13 +306,16 @@ class SenetSkyruk(Senet):
                     board[player - 1, house] = 1
 
             # no more pieces on the board
-            player_wins = np.sum(board[player] != 0) == 0
+            done = np.sum(board[player] != 0) == 0
 
             # pass turn if there are 2 or 3 color sides
             # keep turn if target house is one of the last three houses
             pass_turn = (num_steps in [2, 3]) and landing_house != Senet.HOUSE_OF_HAPPINESS
+            player = player if not pass_turn or done else 1 - player
 
-        return board, player if not pass_turn or player_wins else 1 - player, player_wins, pass_turn
+            reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
+
+        return board, player, reward, done, pass_turn
 
     @staticmethod
     def rebirth(board):
@@ -350,6 +358,6 @@ class SenetGame:
         return self.legal_actions(self.board, self.player, Senet.steps(sticks))
 
     def apply_move(self, action):
-        self.board, self.player, player_wins, pass_turn = self.apply_action(self.board, self.player, action)
-        return self.board, self.player, player_wins, pass_turn
+        self.board, self.player, reward, done, pass_turn = self.apply_action(self.board, self.player, action)
+        return self.board, self.player, reward, done, pass_turn
 

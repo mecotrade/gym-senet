@@ -18,8 +18,8 @@ if __name__ == '__main__':
 
     time.sleep(1)
 
-    player_wins = False
-    while not player_wins:
+    done = False
+    while not done:
         sticks = Senet.throw_sticks()
         print(f'player {player} throws sticks: {sticks}')
 
@@ -29,12 +29,12 @@ if __name__ == '__main__':
         random_move = random.choice(moves)
         print(f'player {player} move: {Senet.decode_move_for_player(random_move, board, player)}')
 
-        board, player, player_wins, pass_turn = game.apply_move(random_move)
+        board, player, reward, done, pass_turn = game.apply_move(random_move)
 
         print(ansi_renderer.render(board))
         board_renderer.render(board)
 
-        if player_wins:
+        if done:
             print(f'player {player} wins!')
         elif pass_turn:
             print(f'turn passes to player {player}')
