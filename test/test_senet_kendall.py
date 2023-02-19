@@ -240,7 +240,7 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
+        new_board, player, reward, done, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
 
         # then
         # check side effects on the board
@@ -250,7 +250,8 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          new_board[SenetKendall.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetKendall.SPOOLS_PLAYER, player)
-        self.assertFalse(player_wins)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
         self.assertFalse(pass_turn)
 
     def test_apply_move_to_house_of_water_house_of_rebirth_occupied(self):
@@ -267,7 +268,7 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([SenetKendall.encode_move(0, 1)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 1))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
+        new_board, player, reward, done, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 1))
 
         # then
         # check side effects on the board
@@ -277,7 +278,8 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          new_board[SenetKendall.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetKendall.SPOOLS_PLAYER, player)
-        self.assertFalse(player_wins)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
         self.assertFalse(pass_turn)
 
     def test_apply_move_house_of_water_happiness_wins(self):
@@ -294,7 +296,7 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([SenetKendall.encode_move(0, 5)], SenetKendall.legal_moves(board, SenetKendall.SPOOLS_PLAYER, 5))
 
         # when
-        new_board, player, player_wins, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 5))
+        new_board, player, reward, done, pass_turn = SenetKendall.apply_move(board, SenetKendall.SPOOLS_PLAYER, SenetKendall.encode_move(0, 5))
 
         # then
         # check side effects on the board
@@ -304,6 +306,32 @@ class TestSenetKendall(unittest.TestCase):
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          new_board[SenetKendall.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetKendall.SPOOLS_PLAYER, player)
-        self.assertTrue(player_wins)
+        self.assertTrue(done)
+        self.assertEqual(-1, reward)
         self.assertFalse(pass_turn)
 
+    def test_apply_move_last_dancer(self):
+
+        # given
+        board = np.array([
+            # -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
+            # 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],  # cons
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]   # spools
+        ])
+
+        # then
+        self.assertEqual([SenetKendall.encode_move(-1, 0)], SenetKendall.legal_moves(board, SenetKendall.CONS_PLAYER, 1))
+
+        # when
+        new_board, player, reward, done, pass_turn = SenetKendall.apply_move(board, SenetKendall.CONS_PLAYER, SenetKendall.encode_move(-1, 0))
+
+        # then
+        #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
+        #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|2
+        self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                         new_board[SenetKendall.CONS_PLAYER].tolist())
+        self.assertEqual(SenetKendall.SPOOLS_PLAYER, player)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertTrue(pass_turn)

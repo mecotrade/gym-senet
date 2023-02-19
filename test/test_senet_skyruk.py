@@ -162,30 +162,32 @@ class TestSenetSkyruk(unittest.TestCase):
             [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]   # spools
         ])
 
-        # then
+        # when
         self.assertEqual([SenetSkyruk.encode_move(0, 3)], SenetSkyruk.legal_moves(board, SenetSkyruk.CONS_PLAYER, 3))
 
-        # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.CONS_PLAYER, SenetSkyruk.encode_move(0, 3))
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.CONS_PLAYER, SenetSkyruk.encode_move(0, 3))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
                          new_board[SenetSkyruk.CONS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.CONS_PLAYER, player)
-        self.assertFalse(player_wins)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
         self.assertFalse(pass_turn)
 
-        # then
+        # when
         self.assertEqual([SenetSkyruk.encode_move(0, 5)], SenetSkyruk.legal_moves(board, SenetSkyruk.CONS_PLAYER, 5))
 
-        # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.CONS_PLAYER, SenetSkyruk.encode_move(0, 5))
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.CONS_PLAYER, SenetSkyruk.encode_move(0, 5))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
                          new_board[SenetSkyruk.CONS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.CONS_PLAYER, player)
-        self.assertFalse(player_wins)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
         self.assertFalse(pass_turn)
 
     def test_apply_moves_from_house_of_happiness(self):
@@ -198,55 +200,70 @@ class TestSenetSkyruk(unittest.TestCase):
             [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0]   # spools
         ])
 
-        # then
+        # when
         self.assertEqual([SenetSkyruk.encode_move(4, 1)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 1))
 
-        # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 1))
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 1))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)
 
-        # then
+        # when
         self.assertEqual([SenetSkyruk.encode_move(4, 2)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 2))
 
-        # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 2))
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 2))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 3)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 3))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertTrue(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 3))
+        self.assertEqual([SenetSkyruk.encode_move(4, 3)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 3))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 3))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 4)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 4))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertTrue(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 4))
+        self.assertEqual([SenetSkyruk.encode_move(4, 4)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 4))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 4))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 5)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 5))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 5))
+        self.assertEqual([SenetSkyruk.encode_move(4, 5)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 5))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 5))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)
 
     def test_apply_moves_from_house_of_happiness_house_of_water_occupied(self):
 
@@ -258,57 +275,72 @@ class TestSenetSkyruk(unittest.TestCase):
             [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0]   # spools
         ])
 
-        # then
+        # when
         self.assertEqual([SenetSkyruk.encode_move(4, 1)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 1))
 
-        # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 1))
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 1))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.SPOOLS_PLAYER, player)
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 2)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 2))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 2))
+        self.assertEqual([SenetSkyruk.encode_move(4, 2)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 2))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 2))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.CONS_PLAYER, player)
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 3)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 3))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertTrue(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 3))
+        self.assertEqual([SenetSkyruk.encode_move(4, 3)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 3))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 3))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.CONS_PLAYER, player)
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 4)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 4))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertTrue(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 4))
+        self.assertEqual([SenetSkyruk.encode_move(4, 4)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 4))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 4))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.SPOOLS_PLAYER, player)
-
-        # then
-        self.assertEqual([SenetSkyruk.encode_move(4, 5)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 5))
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)
 
         # when
-        new_board, player, player_wins, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 5))
+        self.assertEqual([SenetSkyruk.encode_move(4, 5)], SenetSkyruk.legal_moves(board, SenetSkyruk.SPOOLS_PLAYER, 5))
+
+        # then
+        new_board, player, reward, done, pass_turn = SenetSkyruk.apply_move(board.copy(), SenetSkyruk.SPOOLS_PLAYER, SenetSkyruk.encode_move(4, 5))
         #                 -+--+--+--+--+--+--+--+--+--+--+--+--+--+RB+--+--+--+--+--+--+--+--+--+--+HA+WA+3T+RA+HO
         #                 0| 1| 2| 3| 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29
         self.assertEqual([0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
                          new_board[SenetSkyruk.SPOOLS_PLAYER].tolist())
         self.assertEqual(SenetSkyruk.SPOOLS_PLAYER, player)
+        self.assertEqual(0, reward)
+        self.assertFalse(done)
+        self.assertFalse(pass_turn)

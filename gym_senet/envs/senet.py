@@ -186,9 +186,9 @@ class SenetKendall(Senet):
 
             # pass turn if there are 2 or 3 color sides
             pass_turn = num_steps in [2, 3]
-            player = player if not pass_turn or done else 1 - player
 
-            reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
+        player = player if (not pass_turn) or done else 1 - player
+        reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
 
         return board, player, reward, done, pass_turn
 
@@ -311,9 +311,9 @@ class SenetSkyruk(Senet):
             # pass turn if there are 2 or 3 color sides
             # keep turn if target house is one of the last three houses
             pass_turn = (num_steps in [2, 3]) and landing_house != Senet.HOUSE_OF_HAPPINESS
-            player = player if not pass_turn or done else 1 - player
 
-            reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
+        player = player if (not pass_turn) or done else 1 - player
+        reward = (1 if player == Senet.CONS_PLAYER else -1) if done else 0
 
         return board, player, reward, done, pass_turn
 
